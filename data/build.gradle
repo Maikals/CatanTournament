@@ -1,7 +1,6 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'koin'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
 
@@ -10,13 +9,13 @@ android {
     buildToolsVersion build_tools_version
 
     defaultConfig {
-        applicationId "com.example.catantournament"
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
         versionCode version_code
         versionName version_name
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildTypes {
@@ -25,17 +24,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
-// To inline the bytecode built with JVM target 1.8 into
-// bytecode that is being built with JVM target 1.6. (e.g. navArgs)
-
-
     compileOptions {
-        sourceCompatibility java_version
-        targetCompatibility java_version
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        sourceCompatibility = java_version
+        targetCompatibility = java_version
     }
 
 }
@@ -44,16 +35,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    //Android
-    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
-    implementation "androidx.core:core-ktx:$androidx_core_version"
-    implementation "com.google.android.material:material:$material_version"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
-    implementation "androidx.recyclerview:recyclerview:$recycler_view_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     //Koin
-    implementation "org.koin:koin-android:$koin_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation "org.koin:koin-android-viewmodel:$koin_version"
     //Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
@@ -63,5 +46,4 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
     //Projects
     implementation project(":domain")
-    implementation project(":data")
 }

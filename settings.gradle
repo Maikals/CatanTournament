@@ -1,3 +1,4 @@
 rootProject.name='Catan tournament'
 include ':app'
 include ':domain'
+include ':data'
