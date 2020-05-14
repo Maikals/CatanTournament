@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.catantournament.R
+import com.example.catantournament.ui.classification.ClassificationFragment
 import com.example.catantournament.ui.player_list.PlayerListFragment
 import kotlinx.android.synthetic.main.fragment_main.*
 
@@ -26,15 +27,29 @@ class MainFragment : Fragment() {
         bottom_navigation_View.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_item_player_list -> openPlayerListFragment()
+                R.id.menu_item_classification -> openClassificationFragment()
             }
             false
         }
         bottom_navigation_View.selectedItemId = R.id.menu_item_player_list
     }
 
+    private fun openClassificationFragment() {
+        childFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragment_container,
+                ClassificationFragment.newInstance(),
+                ClassificationFragment.TAG
+            ).commit()
+    }
+
     private fun openPlayerListFragment() {
         childFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, PlayerListFragment.newInstance()).commit()
+            .replace(
+                R.id.fragment_container,
+                PlayerListFragment.newInstance(),
+                ClassificationFragment.TAG
+            ).commit()
     }
 
     companion object {

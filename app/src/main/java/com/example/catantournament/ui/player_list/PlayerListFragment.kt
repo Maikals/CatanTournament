@@ -16,7 +16,7 @@ import com.example.catantournament.ui.player_list.EnterPlayerDialogFragment.From
 import com.example.catantournament.ui.player_list.EnterPlayerDialogFragment.From.ADD
 import com.example.catantournament.ui.player_list.EnterPlayerDialogFragment.From.MODIFY
 import com.example.domain.entities.Player
-import com.example.domain.entities.Result
+import com.example.domain.entities.Result.Success
 import kotlinx.android.synthetic.main.fragment_player_list.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -44,7 +44,7 @@ class PlayerListFragment : Fragment(), PlayerListMenuListener.ScreenMenuListener
     private fun observeData() {
         observe(playerListViewModel.playerListLiveData) {
             when (it) {
-                is Result.Success -> managePlayerList(it.data)
+                is Success -> managePlayerList(it.data)
             }
         }
     }

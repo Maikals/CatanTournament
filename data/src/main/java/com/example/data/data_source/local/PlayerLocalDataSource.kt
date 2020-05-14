@@ -34,7 +34,11 @@ class PlayerLocalDataSource : PlayerDataSource {
         Player(
             playerORM.id,
             playerORM.name,
-            playerORM.nick
+            playerORM.nick,
+            playerORM.points,
+            playerORM.victoryPoints,
+            playerORM.bigTradeRoute,
+            playerORM.bigCavalryArmy
         )
 
     override fun addPlayer(player: Player) {

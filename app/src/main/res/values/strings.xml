@@ -9,4 +9,11 @@
     <string name="player_view_holder_menu_modify">Modificar</string>
     <string name="player_view_holder_menu_delete">Eliminar</string>
     <string name="menu_item_player_list_title">Llistat</string>
+    <string name="menu_item_player_classification">Classificació</string>
+    <string name="classification_title">Classificació</string>
+    <string name="classification_header_name">Nom</string>
+    <string name="classification_header_points">P.</string>
+    <string name="classification_header_victory_points">PV.</string>
+    <string name="classification_header_big_trading_route">RC.</string>
+    <string name="classification_header_cavalry_army">EC.</string>
 </resources>

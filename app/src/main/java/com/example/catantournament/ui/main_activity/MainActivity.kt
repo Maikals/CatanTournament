@@ -7,6 +7,6 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setFragmentContent(MainFragment.newInstance())
+        setFragmentContent(MainFragment.newInstance(), MainFragment.TAG)
     }
 }

@@ -1,5 +1,6 @@
 package com.example.catantournament.di
 
+import com.example.catantournament.ui.classification.ClassificationViewModel
 import com.example.catantournament.ui.player_list.PlayerListViewModel
 import com.example.data.data_source.PlayerDataSource
 import com.example.data.data_source.local.PlayerLocalDataSource
@@ -7,6 +8,7 @@ import com.example.data.repositories.PlayerRepositoryImpl
 import com.example.domain.repositories.PlayerRepository
 import com.example.domain.use_case.AddPlayerUseCase
 import com.example.domain.use_case.DeletePlayerUseCase
+import com.example.domain.use_case.GetAllPlayersSortedUseCase
 import com.example.domain.use_case.GetAllPlayersUseCase
 import com.example.domain.use_case.ModifyPlayerUseCase
 import com.example.domain.use_case.SubscribeToPlayerUseCase
@@ -23,12 +25,14 @@ private val viewModelModule = module {
             deletePlayerUseCase = get()
         )
     }
+    viewModel { ClassificationViewModel(getAllPlayersSortedUseCase = get()) }
 }
 
 private val useCasesModule = module {
     factory { AddPlayerUseCase(playerRepository = get()) }
     factory { SubscribeToPlayerUseCase(playerRepository = get()) }
     factory { GetAllPlayersUseCase(playerRepository = get()) }
+    factory { GetAllPlayersSortedUseCase(playerRepository = get()) }
     factory { ModifyPlayerUseCase(playerRepository = get()) }
     factory { DeletePlayerUseCase(playerRepository = get()) }
 }
