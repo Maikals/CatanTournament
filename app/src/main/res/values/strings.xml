@@ -5,4 +5,7 @@
     <string name="dialog_enter_player_nickname_hint">Nickname del jugador</string>
     <string name="dialog_enter_player_name_error">El nom no pot estar buit</string>
     <string name="dialog_enter_player_nick_error">El nick no pot estar buit</string>
+    <string name="player_list_title">Llista de participants</string>
+    <string name="player_view_holder_menu_modify">Modificar</string>
+    <string name="player_view_holder_menu_delete">Eliminar</string>
 </resources>

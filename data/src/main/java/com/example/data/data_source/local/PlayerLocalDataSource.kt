@@ -4,7 +4,6 @@ import com.example.data.data_source.PlayerDataSource
 import com.example.data.db.RealmInstance
 import com.example.data.entities.db.PlayerORM
 import com.example.domain.entities.Player
-import io.realm.Realm
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,11 +11,10 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class PlayerLocalDataSource : PlayerDataSource {
     init {
-        val fn: (Realm) -> Unit = { realmEntity ->
+        RealmInstance.queryScope { realmEntity ->
             realmEntity.where(PlayerORM::class.java).findAll().addChangeListener { elements, _ ->
                 val element = elements.map {
                     toDomain(it)
@@ -26,18 +24,10 @@ class PlayerLocalDataSource : PlayerDataSource {
                 }
             }
         }
-        RealmInstance.queryScope(fn)
     }
 
-    private val playerListChannel = BroadcastChannel<List<Player>>(Channel.BUFFERED).apply {
-        RealmInstance.queryScope { realmEntity ->
-            val allPlayers = realmEntity.where(PlayerORM::class.java).findAll()
-            val listOfPlayer = allPlayers.map { toDomain(it) }
-            runBlocking {
-                send(listOfPlayer)
-            }
-        }
-    }
+    private val playerListChannel = BroadcastChannel<List<Player>>(Channel.BUFFERED)
+
     private val dataSourceScope = CoroutineScope(Job() + Dispatchers.IO)
 
     private fun toDomain(playerORM: PlayerORM): Player =
@@ -66,4 +56,12 @@ class PlayerLocalDataSource : PlayerDataSource {
 
     override fun subscribeToPlayerList(): ReceiveChannel<List<Player>> =
         playerListChannel.openSubscription()
+
+    override fun modifyPlayer(player: Player) =
+        RealmInstance.transactionScope { realmInstance ->
+            realmInstance.insertOrUpdate(PlayerORM(player.id, player.name, player.nick))
+        }!!
+
+    override fun deletePlayer(id: Long) =
+        RealmInstance.deleteEntity(PlayerORM.FIELD_ID, id, PlayerORM::class.java)
 }

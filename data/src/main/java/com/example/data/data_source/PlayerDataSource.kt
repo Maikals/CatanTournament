@@ -7,4 +7,6 @@ interface PlayerDataSource {
     fun addPlayer(player: Player)
     fun findAllPlayers(): List<Player>
     fun subscribeToPlayerList(): ReceiveChannel<List<Player>>
+    fun modifyPlayer(player: Player)
+    fun deletePlayer(player: Long)
 }

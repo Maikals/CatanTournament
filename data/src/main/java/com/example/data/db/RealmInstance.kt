@@ -3,6 +3,7 @@ package com.example.data.db
 import com.example.data.extensions.transactionScope
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import io.realm.RealmModel
 
 object RealmInstance {
     private const val realmName = "CatanDatabase"
@@ -22,5 +23,13 @@ object RealmInstance {
             fn(it)
         }
 
+    fun <S : RealmModel> deleteEntity(fieldName: String, id: Long, type: Class<S>) {
+        val objectToDelete = getRealmInstance().where(type).equalTo(fieldName, id).findAll()
+        transactionScope {
+            objectToDelete.deleteAllFromRealm()
+        }
+    }
+
+    @Synchronized
     private fun getRealmInstance() = Realm.getInstance(realmConfig)
 }

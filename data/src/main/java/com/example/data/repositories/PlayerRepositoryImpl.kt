@@ -19,4 +19,14 @@ class PlayerRepositoryImpl(private val playerLocalDataSource: PlayerDataSource) 
     override fun getAllPlayers(): Flow<List<Player>> = flow {
         emit(playerLocalDataSource.findAllPlayers())
     }
+
+    override fun modifyPlayer(player: Player): Flow<Unit> = flow {
+        playerLocalDataSource.modifyPlayer(player)
+        emit(Unit)
+    }
+
+    override fun deletePlayer(id: Long): Flow<Unit> = flow {
+        playerLocalDataSource.deletePlayer(id)
+        emit(Unit)
+    }
 }
