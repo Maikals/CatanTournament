@@ -8,4 +8,5 @@
     <string name="player_list_title">Llista de participants</string>
     <string name="player_view_holder_menu_modify">Modificar</string>
     <string name="player_view_holder_menu_delete">Eliminar</string>
+    <string name="menu_item_player_list_title">Llistat</string>
 </resources>
