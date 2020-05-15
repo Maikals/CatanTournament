@@ -2,8 +2,16 @@ package com.example.data.data_source.local
 
 import com.example.data.data_source.PlayerDataSource
 import com.example.data.db.RealmInstance
+import com.example.data.entities.db.EncounterORM
 import com.example.data.entities.db.PlayerORM
+import com.example.data.entities.db.RoundORM
+import com.example.data.entities.db.TournamentORM
+import com.example.data.entities.mapper.player.toDomain
+import com.example.domain.entities.Encounter
 import com.example.domain.entities.Player
+import com.example.domain.entities.Round
+import com.example.domain.entities.Tournament
+import io.realm.RealmList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,17 +38,6 @@ class PlayerLocalDataSource : PlayerDataSource {
 
     private val dataSourceScope = CoroutineScope(Job() + Dispatchers.IO)
 
-    private fun toDomain(playerORM: PlayerORM): Player =
-        Player(
-            playerORM.id,
-            playerORM.name,
-            playerORM.nick,
-            playerORM.points,
-            playerORM.victoryPoints,
-            playerORM.bigTradeRoute,
-            playerORM.bigCavalryArmy
-        )
-
     override fun addPlayer(player: Player) {
         val max = RealmInstance.queryScope {
             it.where(PlayerORM::class.java).max(PlayerORM.FIELD_ID)?.toLong() ?: 1
@@ -53,7 +50,7 @@ class PlayerLocalDataSource : PlayerDataSource {
     }
 
     override fun findAllPlayers(): List<Player> =
-        RealmInstance.transactionScope { realmInstance ->
+        RealmInstance.queryScope { realmInstance ->
             realmInstance.where(PlayerORM::class.java).findAll()
                 .map { Player(it.id, it.name, it.nick) }
         }!!

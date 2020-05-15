@@ -1,6 +1,7 @@
 package com.example.data.data_source
 
 import com.example.domain.entities.Player
+import com.example.domain.entities.Tournament
 import kotlinx.coroutines.channels.ReceiveChannel
 
 interface PlayerDataSource {
@@ -8,5 +9,5 @@ interface PlayerDataSource {
     fun findAllPlayers(): List<Player>
     fun subscribeToPlayerList(): ReceiveChannel<List<Player>>
     fun modifyPlayer(player: Player)
-    fun deletePlayer(player: Long)
+    fun deletePlayer(id: Long)
 }

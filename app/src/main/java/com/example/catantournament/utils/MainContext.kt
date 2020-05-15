@@ -1,4 +1,4 @@
-package com.example.catantournament.utls
+package com.example.catantournament.utils
 
 import com.example.domain.use_case.MainContextInterface
 import kotlinx.coroutines.CoroutineDispatcher

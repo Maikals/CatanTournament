@@ -5,9 +5,9 @@ import io.realm.RealmObject
 import io.realm.annotations.LinkingObjects
 import io.realm.annotations.PrimaryKey
 
-class RoundORM(
+open class RoundORM(
     @PrimaryKey var id: Long = 0,
-    @LinkingObjects val roundList: RealmList<EncounterORM>
+    var roundList: RealmList<EncounterORM> = RealmList()
 ) : RealmObject() {
     companion object {
         const val FIELD_ID = "id"
