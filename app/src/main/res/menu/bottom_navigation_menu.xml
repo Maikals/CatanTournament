@@ -11,4 +11,8 @@
         android:icon="@drawable/ic_format_list_numbered"
         android:title="@string/menu_item_player_classification"
         app:iconTint="@android:color/white" />
+    <item
+        android:id="@+id/menu_item_encounters"
+        android:icon="@drawable/ic_compare_arrows"
+        android:title="@string/menu_item_player_encounters" />
 </menu>

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.catantournament.R
 import com.example.catantournament.ui.classification.ClassificationFragment
+import com.example.catantournament.ui.matches.MatchesFragment
 import com.example.catantournament.ui.player_list.PlayerListFragment
 import kotlinx.android.synthetic.main.fragment_main.*
 
@@ -28,10 +29,19 @@ class MainFragment : Fragment() {
             when (item.itemId) {
                 R.id.menu_item_player_list -> openPlayerListFragment()
                 R.id.menu_item_classification -> openClassificationFragment()
+                R.id.menu_item_encounters -> openEncountersFragment()
             }
             false
         }
         bottom_navigation_View.selectedItemId = R.id.menu_item_player_list
+    }
+
+    private fun openEncountersFragment() {
+        childFragmentManager.beginTransaction().replace(
+            R.id.fragment_container,
+            MatchesFragment.newInstance(),
+            MatchesFragment.TAG
+        ).commit()
     }
 
     private fun openClassificationFragment() {

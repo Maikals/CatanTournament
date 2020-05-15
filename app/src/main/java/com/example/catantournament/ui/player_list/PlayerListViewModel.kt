@@ -5,12 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.domain.entities.AddPlayerParams
-import com.example.domain.entities.DeletePlayerParams
-import com.example.domain.entities.EmptyParams
-import com.example.domain.entities.ModifyPlayerParams
 import com.example.domain.entities.Player
 import com.example.domain.entities.Result
+import com.example.domain.entities.params.AddPlayerParams
+import com.example.domain.entities.params.DeletePlayerParams
+import com.example.domain.entities.params.EmptyParams
+import com.example.domain.entities.params.ModifyPlayerParams
 import com.example.domain.use_case.AddPlayerUseCase
 import com.example.domain.use_case.DeletePlayerUseCase
 import com.example.domain.use_case.GetAllPlayersUseCase
@@ -39,7 +39,11 @@ class PlayerListViewModel(
 
     fun addPlayer(player: Player) {
         viewModelScope.launch {
-            addPlayerUseCase(AddPlayerParams(player)).collect {
+            addPlayerUseCase(
+                AddPlayerParams(
+                    player
+                )
+            ).collect {
                 getAllPlayersUseCase(EmptyParams()).collect {
                     _playerListLiveData.postValue(it)
                 }
@@ -49,7 +53,11 @@ class PlayerListViewModel(
 
     fun modifyPlayer(player: Player) {
         viewModelScope.launch {
-            modifyPlayerUseCase(ModifyPlayerParams(player)).collect {
+            modifyPlayerUseCase(
+                ModifyPlayerParams(
+                    player
+                )
+            ).collect {
                 getAllPlayersUseCase(EmptyParams()).collect {
                     _playerListLiveData.postValue(it)
                 }
@@ -59,7 +67,11 @@ class PlayerListViewModel(
 
     fun deletePlayer(id: Long) {
         viewModelScope.launch {
-            deletePlayerUseCase(DeletePlayerParams(id)).collect {
+            deletePlayerUseCase(
+                DeletePlayerParams(
+                    id
+                )
+            ).collect {
                 getAllPlayersUseCase(EmptyParams()).collect {
                     _playerListLiveData.postValue(it)
                 }

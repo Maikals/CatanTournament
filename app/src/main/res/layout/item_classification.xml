@@ -13,11 +13,22 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/position"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/material_padding_xs"
+            android:layout_weight="1"
+            android:gravity="center"
+            tools:text="12" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/player_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/material_padding_xs"
-            android:layout_weight="6"
+            android:layout_weight="5"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:gravity="center_vertical"
             android:textStyle="bold"
             tools:text="Joanot Martorell" />

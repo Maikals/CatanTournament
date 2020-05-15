@@ -1,6 +1,7 @@
 package com.example.catantournament.di
 
 import com.example.catantournament.ui.classification.ClassificationViewModel
+import com.example.catantournament.ui.matches.MatchesViewModel
 import com.example.catantournament.ui.player_list.PlayerListViewModel
 import com.example.data.data_source.PlayerDataSource
 import com.example.data.data_source.local.PlayerLocalDataSource
@@ -26,6 +27,7 @@ private val viewModelModule = module {
         )
     }
     viewModel { ClassificationViewModel(getAllPlayersSortedUseCase = get()) }
+    viewModel { MatchesViewModel() }
 }
 
 private val useCasesModule = module {

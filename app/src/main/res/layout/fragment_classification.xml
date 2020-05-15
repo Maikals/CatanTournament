@@ -42,7 +42,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/material_padding_xs"
-                android:layout_weight="6"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/classification_header_position"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/material_padding_xs"
+                android:layout_weight="5"
                 android:text="@string/classification_header_name"
                 android:textStyle="bold" />
 

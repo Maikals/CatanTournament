@@ -1,6 +1,6 @@
 package com.example.domain.use_case
 
-import com.example.domain.entities.AddPlayerParams
+import com.example.domain.entities.params.AddPlayerParams
 import com.example.domain.repositories.PlayerRepository
 import kotlinx.coroutines.flow.Flow
 

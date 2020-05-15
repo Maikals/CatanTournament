@@ -16,4 +16,8 @@
     <string name="classification_header_victory_points">PV.</string>
     <string name="classification_header_big_trading_route">RC.</string>
     <string name="classification_header_cavalry_army">EC.</string>
+    <string name="menu_item_player_encounters">Enfrontaments</string>
+    <string name="matches_title">Enfrontaments</string>
+    <string name="matches_fragment_round">Ronda</string>
+    <string name="classification_header_position">#</string>
 </resources>

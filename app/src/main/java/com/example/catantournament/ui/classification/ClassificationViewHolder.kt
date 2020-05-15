@@ -7,6 +7,7 @@ import kotlinx.android.synthetic.main.item_classification.view.*
 
 class ClassificationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     fun bind(player: Player) {
+        itemView.position.text = (adapterPosition + 1).toString()
         itemView.player_name.text = player.name
         itemView.points.text = player.points.toString()
         itemView.victory_points.text = player.victoryPoints.toString()

@@ -1,7 +1,7 @@
 package com.example.domain.use_case
 
-import com.example.domain.entities.EmptyParams
 import com.example.domain.entities.Player
+import com.example.domain.entities.params.EmptyParams
 import com.example.domain.repositories.PlayerRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
