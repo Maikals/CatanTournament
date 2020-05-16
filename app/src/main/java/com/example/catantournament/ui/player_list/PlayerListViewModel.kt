@@ -18,6 +18,7 @@ import com.example.domain.use_case.ModifyPlayerUseCase
 import com.example.domain.use_case.SubscribeToPlayerUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class PlayerListViewModel(
     private val addPlayerUseCase: AddPlayerUseCase,
@@ -65,11 +66,11 @@ class PlayerListViewModel(
         }
     }
 
-    fun deletePlayer(id: Long) {
+    fun deletePlayer(uuid: UUID) {
         viewModelScope.launch {
             deletePlayerUseCase(
                 DeletePlayerParams(
-                    id
+                    uuid
                 )
             ).collect {
                 getAllPlayersUseCase(EmptyParams()).collect {

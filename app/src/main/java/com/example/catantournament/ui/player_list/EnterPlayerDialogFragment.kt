@@ -14,6 +14,7 @@ import com.example.catantournament.R
 import com.example.domain.entities.Player
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.util.UUID
 
 class EnterPlayerDialogFragment : DialogFragment() {
 
@@ -29,7 +30,7 @@ class EnterPlayerDialogFragment : DialogFragment() {
                 AppCompatActivity.RESULT_OK,
                 Intent().apply {
                     if (requireArguments().getSerializable(EXTRA_FROM) == From.MODIFY) {
-                        putExtra(EXTRA_ID, requireArguments().getLong(EXTRA_ID))
+                        putExtra(EXTRA_ID, requireArguments().getString(EXTRA_ID))
                         putExtra(EXTRA_FROM, From.MODIFY)
                     } else putExtra(EXTRA_FROM, From.ADD)
                     putExtra(EXTRA_NAME, playerNameEditText.text.toString())
@@ -125,7 +126,7 @@ class EnterPlayerDialogFragment : DialogFragment() {
             EnterPlayerDialogFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(EXTRA_FROM, from)
-                    putLong(EXTRA_ID, player?.id ?: 0L)
+                    putSerializable(EXTRA_ID, player?.id ?: UUID.randomUUID())
                     putString(EXTRA_NAME, player?.name ?: "")
                     putString(EXTRA_NICK, player?.nick ?: "")
                 }

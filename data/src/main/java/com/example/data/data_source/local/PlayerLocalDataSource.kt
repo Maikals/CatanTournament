@@ -2,16 +2,9 @@ package com.example.data.data_source.local
 
 import com.example.data.data_source.PlayerDataSource
 import com.example.data.db.RealmInstance
-import com.example.data.entities.db.EncounterORM
 import com.example.data.entities.db.PlayerORM
-import com.example.data.entities.db.RoundORM
-import com.example.data.entities.db.TournamentORM
 import com.example.data.entities.mapper.player.toDomain
-import com.example.domain.entities.Encounter
 import com.example.domain.entities.Player
-import com.example.domain.entities.Round
-import com.example.domain.entities.Tournament
-import io.realm.RealmList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,6 +12,7 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class PlayerLocalDataSource : PlayerDataSource {
     init {
@@ -39,12 +33,8 @@ class PlayerLocalDataSource : PlayerDataSource {
     private val dataSourceScope = CoroutineScope(Job() + Dispatchers.IO)
 
     override fun addPlayer(player: Player) {
-        val max = RealmInstance.queryScope {
-            it.where(PlayerORM::class.java).max(PlayerORM.FIELD_ID)?.toLong() ?: 1
-        }
-
         RealmInstance.transactionScope { realmInstance ->
-            val playerORM = PlayerORM(max + 1, player.name, player.nick)
+            val playerORM = PlayerORM(UUID.randomUUID().toString(), player.name, player.nick)
             realmInstance.insertOrUpdate(playerORM)
         }
     }
@@ -52,7 +42,7 @@ class PlayerLocalDataSource : PlayerDataSource {
     override fun findAllPlayers(): List<Player> =
         RealmInstance.queryScope { realmInstance ->
             realmInstance.where(PlayerORM::class.java).findAll()
-                .map { Player(it.id, it.name, it.nick) }
+                .map { Player(UUID.fromString(it.id), it.name, it.nick) }
         }!!
 
     override fun subscribeToPlayerList(): ReceiveChannel<List<Player>> =
@@ -60,9 +50,9 @@ class PlayerLocalDataSource : PlayerDataSource {
 
     override fun modifyPlayer(player: Player) =
         RealmInstance.transactionScope { realmInstance ->
-            realmInstance.insertOrUpdate(PlayerORM(player.id, player.name, player.nick))
+            realmInstance.insertOrUpdate(PlayerORM(player.id.toString(), player.name, player.nick))
         }!!
 
-    override fun deletePlayer(id: Long) =
-        RealmInstance.deleteEntity(PlayerORM.FIELD_ID, id, PlayerORM::class.java)
+    override fun deletePlayer(id: UUID) =
+        RealmInstance.deleteEntity(PlayerORM.FIELD_ID, id.toString(), PlayerORM::class.java)
 }

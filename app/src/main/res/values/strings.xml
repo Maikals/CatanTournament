@@ -35,4 +35,5 @@
     <string name="matches_screen_empty_view_title">Clica per a generar un nou torneig</string>
     <string name="matches_screen_empty_view_button">generar</string>
     <string name="create_tournament_dialog_description">Cuantes rondes vols generar?</string>
+    <string name="matches_menu_reset">Reset</string>
 </resources>

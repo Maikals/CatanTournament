@@ -23,7 +23,7 @@ object RealmInstance {
             fn(it)
         }
 
-    fun <S : RealmModel> deleteEntity(fieldName: String, id: Long, type: Class<S>) {
+    fun <S : RealmModel> deleteEntity(fieldName: String, id: String, type: Class<S>) {
         val objectToDelete = getRealmInstance().where(type).equalTo(fieldName, id).findAll()
         transactionScope {
             objectToDelete.deleteAllFromRealm()

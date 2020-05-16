@@ -11,7 +11,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.catantournament.R
 import com.example.catantournament.extensions.observe
-import com.example.catantournament.ui.matches.MatchesStates.*
+import com.example.catantournament.ui.matches.MatchesStates.Error
+import com.example.catantournament.ui.matches.MatchesStates.NoTournament
+import com.example.catantournament.ui.matches.MatchesStates.Progress
+import com.example.catantournament.ui.matches.MatchesStates.Success
 import com.example.domain.entities.Tournament
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_matches.*
@@ -30,15 +33,34 @@ class MatchesFragment : Fragment() {
         observeData()
         setOnClickListeners()
         matchesViewModel.getTournament()
+        setMenu()
+    }
+
+    private fun setMenu() {
+        toolbar.inflateMenu(R.menu.matches_menu)
+        toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.reset_tournament -> resetTournament()
+            }
+            true
+        }
+    }
+
+    private fun resetTournament() {
+        showGenerateTournamentDialog()
     }
 
     private fun setOnClickListeners() {
         generate_tournament_button.setOnClickListener {
-            val dialog = CreateTournamentDialogFragment.newInstance().apply {
-                setTargetFragment(this, CreateTournamentDialogFragment.REQUEST_CODE)
-            }
-            dialog.show(parentFragmentManager, CreateTournamentDialogFragment.TAG)
+            showGenerateTournamentDialog()
         }
+    }
+
+    private fun showGenerateTournamentDialog() {
+        val dialog = CreateTournamentDialogFragment.newInstance().apply {
+            setTargetFragment(this@MatchesFragment, CreateTournamentDialogFragment.REQUEST_CODE)
+        }
+        dialog.show(parentFragmentManager, CreateTournamentDialogFragment.TAG)
     }
 
     private fun observeData() {

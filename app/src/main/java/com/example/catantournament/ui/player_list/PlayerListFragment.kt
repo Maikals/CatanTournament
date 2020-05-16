@@ -19,6 +19,7 @@ import com.example.domain.entities.Player
 import com.example.domain.entities.Result.Success
 import kotlinx.android.synthetic.main.fragment_player_list.*
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.util.UUID
 
 class PlayerListFragment : Fragment(), PlayerListMenuListener.ScreenMenuListener {
     private val playerListViewModel: PlayerListViewModel by viewModel()
@@ -62,7 +63,7 @@ class PlayerListFragment : Fragment(), PlayerListMenuListener.ScreenMenuListener
     private fun openEnterDialog(from: From, player: Player? = null) {
         EnterPlayerDialogFragment.newInstance(from, player).apply {
             setTargetFragment(this@PlayerListFragment, EnterPlayerDialogFragment.REQUEST_CODE)
-        }.show(requireFragmentManager(), EnterPlayerDialogFragment.TAG)
+        }.show(parentFragmentManager, EnterPlayerDialogFragment.TAG)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -79,7 +80,7 @@ class PlayerListFragment : Fragment(), PlayerListMenuListener.ScreenMenuListener
 
     private fun Intent.modifyPlayer() {
         val player = Player(
-            getLongExtra(EnterPlayerDialogFragment.EXTRA_ID, 0),
+            UUID.fromString(getStringExtra(EnterPlayerDialogFragment.EXTRA_ID)),
             getStringExtra(EnterPlayerDialogFragment.EXTRA_NAME)!!,
             getStringExtra(EnterPlayerDialogFragment.EXTRA_NICK)!!
         )

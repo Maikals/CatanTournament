@@ -2,11 +2,11 @@ package com.example.data.repositories
 
 import com.example.data.data_source.PlayerDataSource
 import com.example.domain.entities.Player
-import com.example.domain.entities.Tournament
 import com.example.domain.repositories.PlayerRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flow
+import java.util.UUID
 
 class PlayerRepositoryImpl(private val playerLocalDataSource: PlayerDataSource) : PlayerRepository {
     override fun addUser(player: Player) = flow {
@@ -26,7 +26,7 @@ class PlayerRepositoryImpl(private val playerLocalDataSource: PlayerDataSource) 
         emit(Unit)
     }
 
-    override fun deletePlayer(id: Long): Flow<Unit> = flow {
+    override fun deletePlayer(id: UUID): Flow<Unit> = flow {
         playerLocalDataSource.deletePlayer(id)
         emit(Unit)
     }
