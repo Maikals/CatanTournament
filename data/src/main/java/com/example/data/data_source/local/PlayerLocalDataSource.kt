@@ -5,6 +5,7 @@ import com.example.data.db.RealmInstance
 import com.example.data.entities.db.PlayerORM
 import com.example.data.entities.mapper.player.toDomain
 import com.example.domain.entities.Player
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
@@ -24,8 +25,9 @@ class PlayerLocalDataSource : PlayerDataSource {
         RealmInstance.queryScope { realmInstance ->
             realmInstance.where(PlayerORM::class.java).findAll()
                 .map { Player(UUID.fromString(it.id), it.name, it.nick) }
-        }!!
+        }
 
+    @ExperimentalCoroutinesApi
     override fun subscribeToPlayerList() = callbackFlow<List<Player>> {
         playerList.addChangeListener { elements, _ ->
             val element = elements.map {
