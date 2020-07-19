@@ -6,12 +6,13 @@ import java.util.UUID
 
 open class EncounterResultORM(
     @PrimaryKey var id: String = UUID.randomUUID().toString(),
-    var playerId: Long = 0,
+    var playerId: String = UUID.randomUUID().toString(),
     var matchPoints: Int = 0,
     var points: Int = 0,
     var victoryPoints: Int = 0,
     var bigTradeRoutePoints: Int = 0,
-    var cavalryArmyPoints: Int = 0
+    var cavalryArmyPoints: Int = 0,
+    var numberOfCities: Int = 0
 ) : RealmObject() {
     companion object {
         const val FIELD_ID = "id"

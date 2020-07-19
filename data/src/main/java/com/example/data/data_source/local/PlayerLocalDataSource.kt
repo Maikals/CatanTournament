@@ -5,32 +5,13 @@ import com.example.data.db.RealmInstance
 import com.example.data.entities.db.PlayerORM
 import com.example.data.entities.mapper.player.toDomain
 import com.example.domain.entities.Player
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import java.util.UUID
 
 class PlayerLocalDataSource : PlayerDataSource {
-    init {
-        RealmInstance.queryScope { realmEntity ->
-            realmEntity.where(PlayerORM::class.java).findAll().addChangeListener { elements, _ ->
-                val element = elements.map {
-                    toDomain(it)
-                }
-                dataSourceScope.launch {
-                    playerListChannel.send(element)
-                }
-            }
-        }
-    }
-
-    private val playerListChannel = BroadcastChannel<List<Player>>(Channel.BUFFERED)
-
-    private val dataSourceScope = CoroutineScope(Job() + Dispatchers.IO)
+    private val playerList = RealmInstance.getRealmInstance().where(PlayerORM::class.java).findAll()
 
     override fun addPlayer(player: Player) {
         RealmInstance.transactionScope { realmInstance ->
@@ -45,8 +26,16 @@ class PlayerLocalDataSource : PlayerDataSource {
                 .map { Player(UUID.fromString(it.id), it.name, it.nick) }
         }!!
 
-    override fun subscribeToPlayerList(): ReceiveChannel<List<Player>> =
-        playerListChannel.openSubscription()
+    override fun subscribeToPlayerList() = callbackFlow<List<Player>> {
+        playerList.addChangeListener { elements, _ ->
+            val element = elements.map {
+                toDomain(it)
+            }
+            sendBlocking(element)
+        }
+        sendBlocking(playerList.map { toDomain(it) })
+        awaitClose { playerList.removeAllChangeListeners() }
+    }
 
     override fun modifyPlayer(player: Player) =
         RealmInstance.transactionScope { realmInstance ->

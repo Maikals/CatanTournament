@@ -39,33 +39,28 @@ class TournamentLocalDataSource : TournamentDataSource {
         }!!
     }
 
-    override fun getEncountersFromPlayerId(id: Long): List<EncounterResult> =
+    override fun getEncountersFromPlayerId(id: UUID): List<EncounterResult> =
         RealmInstance.queryScope { realm ->
             realm.where(EncounterResultORM::class.java)
-                .equalTo(EncounterResultORM.FIELD_PLAYER_ID, id).findAll().map {
-                    createEncounterResult(it)
+                .equalTo(EncounterResultORM.FIELD_PLAYER_ID, id.toString()).findAll().map {
+                    toDomain(it)
                 }
+        }
+
+    override fun getEncounter(id: Long): Encounter =
+        RealmInstance.queryScope { realm ->
+            toDomain(
+                realm.where(EncounterORM::class.java).equalTo(EncounterORM.FIELD_ID, id)
+                    .findFirst()!!
+            )
         }
 
     private fun createEncounterResultList(encounterResults: List<EncounterResult>): RealmList<EncounterResultORM> =
         RealmList<EncounterResultORM>().apply {
             encounterResults.forEach {
-                add(
-                    toDomain(it)
-                )
+                add(toDomain(it))
             }
         }
-
-    private fun createEncounterResult(encounterResultORM: EncounterResultORM): EncounterResult =
-        EncounterResult(
-            UUID.fromString(encounterResultORM.id),
-            encounterResultORM.playerId,
-            encounterResultORM.points,
-            encounterResultORM.matchPoints,
-            encounterResultORM.victoryPoints,
-            encounterResultORM.bigTradeRoutePoints,
-            encounterResultORM.cavalryArmyPoints
-        )
 
     override fun getTournament() =
         RealmInstance.queryScope { realm ->
@@ -74,11 +69,15 @@ class TournamentLocalDataSource : TournamentDataSource {
 
     override fun getRound(id: Long): Round =
         RealmInstance.queryScope { realm ->
-            toDomain(realm.where(RoundORM::class.java).equalTo(RoundORM.FIELD_ID, id).findFirst()!!)
+            toDomain(
+                realm.where(RoundORM::class.java).equalTo(RoundORM.FIELD_ID, id)
+                    .findFirst()!!
+            )
         }
 
     private fun resetTournament() {
         RealmInstance.transactionScope { realm ->
+            realm.where(EncounterResultORM::class.java).findAll().deleteAllFromRealm()
             realm.where(EncounterORM::class.java).findAll().deleteAllFromRealm()
             realm.where(RoundORM::class.java).findAll().deleteAllFromRealm()
             realm.where(TournamentORM::class.java).findAll().deleteAllFromRealm()
@@ -109,9 +108,7 @@ class TournamentLocalDataSource : TournamentDataSource {
             encounter.playerList.forEach { player ->
                 add(createPlayerORMFromPlayer(player))
             }
-        },
-        createEncounterResultList(encounter.encounterResults)
-    )
+        })
 
     private fun createPlayerORMFromPlayer(
         player: Player

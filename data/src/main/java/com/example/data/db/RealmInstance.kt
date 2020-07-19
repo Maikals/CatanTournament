@@ -31,5 +31,5 @@ object RealmInstance {
     }
 
     @Synchronized
-    private fun getRealmInstance() = Realm.getInstance(realmConfig)
+    fun getRealmInstance() = Realm.getInstance(realmConfig)
 }

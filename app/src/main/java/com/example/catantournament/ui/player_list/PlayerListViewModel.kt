@@ -28,13 +28,7 @@ class PlayerListViewModel(
     private val deletePlayerUseCase: DeletePlayerUseCase
 ) : ViewModel() {
     private val _playerListLiveData: MutableLiveData<Result<List<Player>>> =
-        (subscribeToPlayerUseCase(EmptyParams()).asLiveData() as MutableLiveData<Result<List<Player>>>).apply {
-            viewModelScope.launch {
-                getAllPlayersUseCase(EmptyParams()).collect {
-                    postValue(it)
-                }
-            }
-        }
+        (subscribeToPlayerUseCase(EmptyParams()).asLiveData() as MutableLiveData<Result<List<Player>>>)
     val playerListLiveData: LiveData<Result<List<Player>>>
         get() = _playerListLiveData
 
@@ -44,11 +38,7 @@ class PlayerListViewModel(
                 AddPlayerParams(
                     player
                 )
-            ).collect {
-                getAllPlayersUseCase(EmptyParams()).collect {
-                    _playerListLiveData.postValue(it)
-                }
-            }
+            ).collect()
         }
     }
 
@@ -58,11 +48,7 @@ class PlayerListViewModel(
                 ModifyPlayerParams(
                     player
                 )
-            ).collect {
-                getAllPlayersUseCase(EmptyParams()).collect {
-                    _playerListLiveData.postValue(it)
-                }
-            }
+            ).collect()
         }
     }
 
@@ -72,11 +58,7 @@ class PlayerListViewModel(
                 DeletePlayerParams(
                     uuid
                 )
-            ).collect {
-                getAllPlayersUseCase(EmptyParams()).collect {
-                    _playerListLiveData.postValue(it)
-                }
-            }
+            ).collect()
         }
     }
 }

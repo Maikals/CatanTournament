@@ -1,5 +1,6 @@
 package com.example.catantournament.ui.matches
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.catantournament.R
 import com.example.catantournament.extensions.observe
 import com.example.catantournament.interfaces.AdapterOnClickListenerInterface
+import com.example.catantournament.ui.encounter.EncounterActivity
 import com.example.domain.entities.Encounter
 import com.example.domain.entities.Result.Success
 import com.example.domain.entities.Round
@@ -59,5 +61,8 @@ class RoundFragment : Fragment(), AdapterOnClickListenerInterface.Screen<Encount
     }
 
     override fun onClick(data: Encounter) {
+        startActivity(Intent(requireActivity(), EncounterActivity::class.java).apply {
+            putExtra(EncounterActivity.EXTRA_ENCOUNTER_ID, data.id)
+        })
     }
 }

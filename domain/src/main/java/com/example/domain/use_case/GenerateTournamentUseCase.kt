@@ -1,7 +1,6 @@
 package com.example.domain.use_case
 
 import com.example.domain.entities.Encounter
-import com.example.domain.entities.EncounterResult
 import com.example.domain.entities.Player
 import com.example.domain.entities.Round
 import com.example.domain.entities.Tournament
@@ -57,19 +56,9 @@ class GenerateTournamentUseCase(
         val subList = indexList.subList(0, sublistSize)
         val encounter = Encounter(id = 0, playerList = ArrayList<Player>().apply {
             subList.forEach {
-                add(playerList[it].apply {
-                    (encounterResults as ArrayList).run {
-                        add(EncounterResult())
-                    }
-                })
+                add(playerList[it])
             }
-        }).apply {
-            this.playerList.forEach {
-                (encounterResults as ArrayList).run {
-                    add(it.encounterResults.last())
-                }
-            }
-        }
+        })
         repeat(sublistSize) { indexList.removeAt(0) }
         println("after$indexList")
         add(encounter)

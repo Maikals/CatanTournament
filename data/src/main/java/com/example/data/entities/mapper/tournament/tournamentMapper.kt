@@ -30,11 +30,14 @@ fun toDomain(roundORM: RoundORM): Round =
     })
 
 fun toDomain(encounterORM: EncounterORM): Encounter =
-    Encounter(encounterORM.id, ArrayList<Player>().apply {
-        encounterORM.playerList.forEach {
-            add(toDomain(it))
-        }
-    })
+    Encounter(
+        encounterORM.id, ArrayList<Player>().apply {
+            encounterORM.playerList.forEach {
+                add(toDomain(it))
+            }
+        },
+        toDomain(encounterORM.results)
+    )
 
 fun toDomain(encounterORMList: RealmList<EncounterResultORM>): List<EncounterResult> =
     ArrayList<EncounterResult>().apply {
@@ -46,17 +49,18 @@ fun toDomain(encounterORMList: RealmList<EncounterResultORM>): List<EncounterRes
 fun toDomain(encounterResultORM: EncounterResultORM): EncounterResult =
     EncounterResult(
         UUID.fromString(encounterResultORM.id),
-        encounterResultORM.playerId,
+        UUID.fromString(encounterResultORM.playerId),
         encounterResultORM.points,
         encounterResultORM.matchPoints,
         encounterResultORM.victoryPoints,
         encounterResultORM.bigTradeRoutePoints,
-        encounterResultORM.cavalryArmyPoints
+        encounterResultORM.cavalryArmyPoints,
+        encounterResultORM.numberOfCities
     )
 
 fun toDomain(it: EncounterResult): EncounterResultORM = EncounterResultORM(
-    UUID.randomUUID().toString(),
-    it.playerId,
+    it.id.toString(),
+    it.playerId.toString(),
     it.matchPoints,
     it.points,
     it.victoryPoints,

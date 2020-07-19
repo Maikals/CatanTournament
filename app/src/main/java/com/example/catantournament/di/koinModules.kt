@@ -1,6 +1,7 @@
 package com.example.catantournament.di
 
 import com.example.catantournament.ui.classification.ClassificationViewModel
+import com.example.catantournament.ui.encounter.EncounterViewModel
 import com.example.catantournament.ui.matches.MatchesViewModel
 import com.example.catantournament.ui.matches.RoundViewModel
 import com.example.catantournament.ui.player_list.PlayerListViewModel
@@ -17,6 +18,7 @@ import com.example.domain.use_case.DeletePlayerUseCase
 import com.example.domain.use_case.GenerateTournamentUseCase
 import com.example.domain.use_case.GetAllPlayersSortedUseCase
 import com.example.domain.use_case.GetAllPlayersUseCase
+import com.example.domain.use_case.GetEncounterUseCase
 import com.example.domain.use_case.GetRoundUseCase
 import com.example.domain.use_case.GetTournamentUseCase
 import com.example.domain.use_case.ModifyPlayerUseCase
@@ -37,6 +39,7 @@ private val viewModelModule = module {
     viewModel { ClassificationViewModel(getAllPlayersSortedUseCase = get()) }
     viewModel { MatchesViewModel(generateTournamentUseCase = get(), getTournamentUseCase = get()) }
     viewModel { RoundViewModel(getRoundUseCase = get()) }
+    viewModel { EncounterViewModel(getEncounterUseCase = get()) }
 }
 
 private val useCasesModule = module {
@@ -49,6 +52,7 @@ private val useCasesModule = module {
     factory { GenerateTournamentUseCase(playerRepository = get(), tournamentRepository = get()) }
     factory { GetTournamentUseCase(tournamentRepository = get()) }
     factory { GetRoundUseCase(tournamentRepository = get()) }
+    factory { GetEncounterUseCase(tournamentRepository = get()) }
 }
 
 private val repositoriesModule = module {
