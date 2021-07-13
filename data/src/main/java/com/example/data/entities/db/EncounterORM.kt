@@ -3,9 +3,10 @@ package com.example.data.entities.db
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
+import java.util.UUID
 
 open class EncounterORM(
-    @PrimaryKey var id: Long = 0,
+    @PrimaryKey var id: String = UUID.randomUUID().toString(),
     var playerList: RealmList<PlayerORM> = RealmList(),
     var results: RealmList<EncounterResultORM> = RealmList()
 ) : RealmObject() {

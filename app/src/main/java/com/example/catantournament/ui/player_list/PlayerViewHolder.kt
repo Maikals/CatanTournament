@@ -6,9 +6,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.catantournament.R
+import com.example.catantournament.databinding.PlayerListItemBinding
 import com.example.catantournament.interfaces.PlayerListMenuListener
 import com.example.domain.entities.Player
-import kotlinx.android.synthetic.main.player_list_item.view.*
 
 class PlayerViewHolder(
     view: View,
@@ -27,11 +27,12 @@ class PlayerViewHolder(
     }
 
     fun bind(player: Player) {
+        val bind = PlayerListItemBinding.bind(itemView)
         itemView.setOnClickListener {
             itemView.showContextMenu()
         }
-        itemView.player_name.text = player.name
-        itemView.player_nick.text = player.nick
+        bind.playerName.text = player.name
+        bind.playerNick.text = player.nick
     }
 
     override fun onCreateContextMenu(

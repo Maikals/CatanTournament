@@ -22,8 +22,9 @@ import com.example.domain.use_case.GetEncounterUseCase
 import com.example.domain.use_case.GetRoundUseCase
 import com.example.domain.use_case.GetTournamentUseCase
 import com.example.domain.use_case.ModifyPlayerUseCase
+import com.example.domain.use_case.SaveEncounterUseCase
 import com.example.domain.use_case.SubscribeToPlayerUseCase
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 private val viewModelModule = module {
@@ -39,7 +40,12 @@ private val viewModelModule = module {
     viewModel { ClassificationViewModel(getAllPlayersSortedUseCase = get()) }
     viewModel { MatchesViewModel(generateTournamentUseCase = get(), getTournamentUseCase = get()) }
     viewModel { RoundViewModel(getRoundUseCase = get()) }
-    viewModel { EncounterViewModel(getEncounterUseCase = get()) }
+    viewModel {
+        EncounterViewModel(
+            getEncounterUseCase = get(),
+            saveEncounterUseCase = get()
+        )
+    }
 }
 
 private val useCasesModule = module {
@@ -53,6 +59,7 @@ private val useCasesModule = module {
     factory { GetTournamentUseCase(tournamentRepository = get()) }
     factory { GetRoundUseCase(tournamentRepository = get()) }
     factory { GetEncounterUseCase(tournamentRepository = get()) }
+    factory { SaveEncounterUseCase(tournamentRepository = get()) }
 }
 
 private val repositoriesModule = module {

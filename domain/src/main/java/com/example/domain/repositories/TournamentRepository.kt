@@ -10,7 +10,8 @@ import java.util.UUID
 interface TournamentRepository {
     fun createTournament(generateTournament: Tournament): Flow<Tournament>
     fun getTournament(): Flow<Tournament?>
-    fun getRound(id: Long): Flow<Round>
+    fun getRound(id: String?): Flow<Round>
     fun getEncountersFromPlayerId(id: UUID): Flow<List<EncounterResult>>
-    fun getEncounter(id: Long): Flow<Encounter>
+    fun getEncounter(id: String): Flow<Encounter>
+    fun saveEncounter(encounter: Encounter): Flow<Unit>
 }

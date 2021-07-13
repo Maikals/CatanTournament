@@ -1,30 +1,25 @@
 package com.example.catantournament.ui.classification
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.catantournament.R
+import com.example.catantournament.databinding.FragmentClassificationBinding
 import com.example.catantournament.extensions.observe
 import com.example.domain.entities.Player
 import com.example.domain.entities.Result.Success
-import kotlinx.android.synthetic.main.fragment_classification.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ClassificationFragment : Fragment() {
+class ClassificationFragment : Fragment(R.layout.fragment_classification) {
     private val classificationViewModel: ClassificationViewModel by viewModel()
     private val linearLayoutManager by lazy { LinearLayoutManager(requireContext()) }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_classification, container, false)
+    private var binding: FragmentClassificationBinding? = null
+    private val views get() = binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentClassificationBinding.bind(view)
         setRecyclerView()
         observeData()
     }
@@ -38,11 +33,16 @@ class ClassificationFragment : Fragment() {
     }
 
     private fun manageClassificationList(data: List<Player>) {
-        classification_list.adapter = ClassificationListAdapter(data)
+        views.classificationList.adapter = ClassificationListAdapter(data)
     }
 
     private fun setRecyclerView() {
-        classification_list.layoutManager = linearLayoutManager
+        views.classificationList.layoutManager = linearLayoutManager
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     companion object {

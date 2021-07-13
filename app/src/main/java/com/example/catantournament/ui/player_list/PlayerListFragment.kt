@@ -2,14 +2,13 @@ package com.example.catantournament.ui.player_list
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.catantournament.R
+import com.example.catantournament.databinding.FragmentPlayerListBinding
 import com.example.catantournament.extensions.observe
 import com.example.catantournament.interfaces.PlayerListMenuListener
 import com.example.catantournament.ui.player_list.EnterPlayerDialogFragment.From
@@ -17,29 +16,28 @@ import com.example.catantournament.ui.player_list.EnterPlayerDialogFragment.From
 import com.example.catantournament.ui.player_list.EnterPlayerDialogFragment.From.MODIFY
 import com.example.domain.entities.Player
 import com.example.domain.entities.Result.Success
-import kotlinx.android.synthetic.main.fragment_player_list.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.UUID
 
-class PlayerListFragment : Fragment(), PlayerListMenuListener.ScreenMenuListener {
+class PlayerListFragment :
+    Fragment(R.layout.fragment_player_list),
+    PlayerListMenuListener.ScreenMenuListener {
     private val playerListViewModel: PlayerListViewModel by viewModel()
     private val linearLayoutManager by lazy { LinearLayoutManager(requireContext()) }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_player_list, container, false)
+    private var binding: FragmentPlayerListBinding? = null
+    private val views get() = binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentPlayerListBinding.bind(view)
         setOnClickListeners()
         setPlayerList()
         observeData()
     }
 
     private fun setPlayerList() {
-        registerForContextMenu(player_list)
-        player_list.layoutManager = linearLayoutManager
+        registerForContextMenu(views.playerList)
+        views.playerList.layoutManager = linearLayoutManager
     }
 
     private fun observeData() {
@@ -51,11 +49,11 @@ class PlayerListFragment : Fragment(), PlayerListMenuListener.ScreenMenuListener
     }
 
     private fun managePlayerList(playerList: List<Player>) {
-        player_list.adapter = PlayerListAdapter(playerList, this)
+        views.playerList.adapter = PlayerListAdapter(playerList, this)
     }
 
     private fun setOnClickListeners() {
-        fab.setOnClickListener {
+        views.fab.setOnClickListener {
             openEnterDialog(ADD)
         }
     }
@@ -107,6 +105,11 @@ class PlayerListFragment : Fragment(), PlayerListMenuListener.ScreenMenuListener
             R.id.add_player -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 
     companion object {

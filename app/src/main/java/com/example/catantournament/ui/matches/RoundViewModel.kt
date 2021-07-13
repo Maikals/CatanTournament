@@ -15,15 +15,11 @@ class RoundViewModel(private val getRoundUseCase: GetRoundUseCase) : ViewModel()
     private val _roundLiveData = MutableLiveData<Result<Round>>()
     val roundLiveData: LiveData<Result<Round>> = _roundLiveData
 
-    fun start(id: Long) {
+    fun start(id: String?) {
         viewModelScope.launch {
             getRoundUseCase(GetRoundParams(id)).collect {
                 _roundLiveData.postValue(it)
             }
         }
-    }
-
-    fun refreshData(id: Long) {
-        start(id)
     }
 }

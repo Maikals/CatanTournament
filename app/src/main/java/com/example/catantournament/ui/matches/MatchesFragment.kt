@@ -3,13 +3,12 @@ package com.example.catantournament.ui.matches
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.catantournament.R
+import com.example.catantournament.databinding.FragmentMatchesBinding
 import com.example.catantournament.extensions.observe
 import com.example.catantournament.ui.matches.MatchesStates.Error
 import com.example.catantournament.ui.matches.MatchesStates.NoTournament
@@ -17,19 +16,16 @@ import com.example.catantournament.ui.matches.MatchesStates.Progress
 import com.example.catantournament.ui.matches.MatchesStates.Success
 import com.example.domain.entities.Tournament
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.fragment_matches.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MatchesFragment : Fragment() {
+class MatchesFragment : Fragment(R.layout.fragment_matches) {
     private val matchesViewModel: MatchesViewModel by viewModel()
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_matches, container, false)
+    private var binding: FragmentMatchesBinding? = null
+    private val views get() = binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentMatchesBinding.bind(view)
         observeData()
         setOnClickListeners()
         matchesViewModel.getTournament()
@@ -37,8 +33,8 @@ class MatchesFragment : Fragment() {
     }
 
     private fun setMenu() {
-        toolbar.inflateMenu(R.menu.matches_menu)
-        toolbar.setOnMenuItemClickListener {
+        views.toolbar.inflateMenu(R.menu.matches_menu)
+        views.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.reset_tournament -> resetTournament()
             }
@@ -51,7 +47,7 @@ class MatchesFragment : Fragment() {
     }
 
     private fun setOnClickListeners() {
-        generate_tournament_button.setOnClickListener {
+        views.generateTournamentButton.setOnClickListener {
             showGenerateTournamentDialog()
         }
     }
@@ -88,29 +84,32 @@ class MatchesFragment : Fragment() {
     }
 
     private fun showEmptyView() {
-        empty_view.visibility = VISIBLE
+        views.emptyView.visibility = VISIBLE
     }
 
     private fun showError() {
-
     }
 
     private fun showProgress() {
-
     }
 
     private fun manageEncounters(tournament: Tournament) {
-        empty_view.visibility = GONE
-        pager.adapter = TournamentAdapter(requireActivity(), tournament)
+        views.emptyView.visibility = GONE
+        views.pager.adapter = TournamentAdapter(requireActivity(), tournament)
         setUpTabLayout()
-        pager.visibility = VISIBLE
-        tab_layout.visibility = VISIBLE
+        views.pager.visibility = VISIBLE
+        views.tabLayout.visibility = VISIBLE
     }
 
     private fun setUpTabLayout() {
-        TabLayoutMediator(tab_layout, pager) { tab, position ->
+        TabLayoutMediator(views.tabLayout, views.pager) { tab, position ->
             tab.text = "${getString(R.string.matches_fragment_round)} ${position + 1}"
         }.attach()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     companion object {

@@ -3,10 +3,10 @@ package com.example.catantournament.ui.matches
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.catantournament.databinding.ItemListEncounterBinding
 import com.example.catantournament.interfaces.AdapterOnClickListenerInterface
 import com.example.domain.entities.Encounter
 import com.example.domain.entities.Player
-import kotlinx.android.synthetic.main.item_list_encounter.view.*
 
 class EncounterViewHolder(
     view: View,
@@ -14,28 +14,29 @@ class EncounterViewHolder(
 ) : RecyclerView.ViewHolder(view) {
 
     fun bindView(encounter: Encounter) {
+        val bind = ItemListEncounterBinding.bind(itemView)
         setOnClickListener()
         setPlayer(
             encounter.playerList[PLAYER_1_ID],
-            itemView.first_player_name,
-            itemView.first_player_nick
+            bind.firstPlayerName,
+            bind.firstPlayerNick
         )
         setPlayer(
             encounter.playerList[PLAYER_2_ID],
-            itemView.second_player_name,
-            itemView.second_player_nick
+            bind.secondPlayerName,
+            bind.secondPlayerNick
         )
         setPlayer(
             encounter.playerList[PLAYER_3_ID],
-            itemView.third_player_name,
-            itemView.third_player_nick
+            bind.thirdPlayerName,
+            bind.thirdPlayerNick
         )
         if (encounter.playerList.size > 3) {
-            itemView.fourth_player_container.visibility = View.VISIBLE
+            bind.fourthPlayerContainer.visibility = View.VISIBLE
             setPlayer(
                 encounter.playerList[PLAYER_4_ID],
-                itemView.fourth_player_name,
-                itemView.fourth_player_nick
+                bind.fourthPlayerName,
+                bind.fourthPlayerNick
             )
         }
     }
@@ -50,7 +51,9 @@ class EncounterViewHolder(
     }
 
     private fun setOnClickListener() {
-        listener.onClick(adapterPosition)
+        itemView.setOnClickListener {
+            listener.onClick(absoluteAdapterPosition)
+        }
     }
 
     companion object {

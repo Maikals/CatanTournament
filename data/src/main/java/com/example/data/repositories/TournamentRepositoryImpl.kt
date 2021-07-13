@@ -12,8 +12,8 @@ import java.util.UUID
 
 class TournamentRepositoryImpl(private val tournamentCloudDataSource: TournamentDataSource) :
     TournamentRepository {
-    override fun createTournament(tournament: Tournament): Flow<Tournament> = flow {
-        emit(tournamentCloudDataSource.createTournament(tournament))
+    override fun createTournament(generateTournament: Tournament) = flow {
+        emit(tournamentCloudDataSource.createTournament(generateTournament))
     }
 
     override fun getTournament(): Flow<Tournament?> = flow {
@@ -21,7 +21,7 @@ class TournamentRepositoryImpl(private val tournamentCloudDataSource: Tournament
         emit(tournament)
     }
 
-    override fun getRound(id: Long): Flow<Round> = flow {
+    override fun getRound(id: String?): Flow<Round> = flow {
         emit(tournamentCloudDataSource.getRound(id))
     }
 
@@ -29,7 +29,11 @@ class TournamentRepositoryImpl(private val tournamentCloudDataSource: Tournament
         emit(tournamentCloudDataSource.getEncountersFromPlayerId(id))
     }
 
-    override fun getEncounter(id: Long): Flow<Encounter> = flow {
+    override fun getEncounter(id: String): Flow<Encounter> = flow {
         emit(tournamentCloudDataSource.getEncounter(id))
+    }
+
+    override fun saveEncounter(encounter: Encounter): Flow<Unit> = flow {
+        emit(tournamentCloudDataSource.saveEncounter(encounter))
     }
 }

@@ -7,6 +7,7 @@ import com.example.data.entities.db.EncounterResultORM
 import com.example.data.entities.db.PlayerORM
 import com.example.data.entities.db.RoundORM
 import com.example.data.entities.db.TournamentORM
+import com.example.data.entities.mapper.tournament.toData
 import com.example.data.entities.mapper.tournament.toDomain
 import com.example.domain.entities.Encounter
 import com.example.domain.entities.EncounterResult
@@ -14,25 +15,23 @@ import com.example.domain.entities.Player
 import com.example.domain.entities.Round
 import com.example.domain.entities.Tournament
 import io.realm.RealmList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import java.util.UUID
 
 class TournamentLocalDataSource : TournamentDataSource {
 
+    private val tournamentRealm =
+        RealmInstance.getRealmInstance().where(TournamentORM::class.java).findAll()
+
     override fun createTournament(tournament: Tournament): Tournament {
-        var roundMaxId: Long = 0
-        var encounterMaxId: Long = 0
         resetTournament()
-        RealmInstance.queryScope { realm ->
-            roundMaxId = realm.where(RoundORM::class.java).max(RoundORM.FIELD_ID)?.toLong() ?: 0
-            encounterMaxId =
-                realm.where(EncounterORM::class.java).max(EncounterORM.FIELD_ID)?.toLong() ?: 0
-        }
         return RealmInstance.transactionScope { realm ->
             val tournamentORM =
                 createTournamentORMFromTournament(
-                    tournament,
-                    roundMaxId,
-                    encounterMaxId
+                    tournament
                 )
             realm.insertOrUpdate(tournamentORM)
             toDomain(tournamentORM)
@@ -47,7 +46,7 @@ class TournamentLocalDataSource : TournamentDataSource {
                 }
         }
 
-    override fun getEncounter(id: Long): Encounter =
+    override fun getEncounter(id: String): Encounter =
         RealmInstance.queryScope { realm ->
             toDomain(
                 realm.where(EncounterORM::class.java).equalTo(EncounterORM.FIELD_ID, id)
@@ -55,19 +54,27 @@ class TournamentLocalDataSource : TournamentDataSource {
             )
         }
 
-    private fun createEncounterResultList(encounterResults: List<EncounterResult>): RealmList<EncounterResultORM> =
-        RealmList<EncounterResultORM>().apply {
-            encounterResults.forEach {
-                add(toDomain(it))
-            }
+    @ExperimentalCoroutinesApi
+    override fun subscribeToTournament() = callbackFlow<Tournament?> {
+        tournamentRealm.addChangeListener { elements, _ ->
+            sendBlocking(toDomain(elements.first()))
         }
+        sendBlocking(toDomain(tournamentRealm.first()))
+        awaitClose()
+    }
+
+    override fun saveEncounter(encounter: Encounter) {
+        RealmInstance.transactionScope { realm ->
+            realm.copyToRealmOrUpdate(toData(encounter))
+        }
+    }
 
     override fun getTournament() =
         RealmInstance.queryScope { realm ->
             toDomain(realm.where(TournamentORM::class.java).findFirst())
         }
 
-    override fun getRound(id: Long): Round =
+    override fun getRound(id: String?): Round =
         RealmInstance.queryScope { realm ->
             toDomain(
                 realm.where(RoundORM::class.java).equalTo(RoundORM.FIELD_ID, id)
@@ -84,31 +91,36 @@ class TournamentLocalDataSource : TournamentDataSource {
         }
     }
 
-    private fun createRoundORMFromRound(
-        roundMaxId: Long,
-        round: Round,
-        encounterMaxId: Long
-    ): RoundORM = RoundORM(roundMaxId, RealmList<EncounterORM>().apply {
-        val id = encounterMaxId + roundMaxId * round.encounterList.size
-        round.encounterList.forEachIndexed { i, encounter ->
-            add(
-                createEncounterORMFromEncounter(
-                    (id + i) * roundMaxId,
-                    encounter
-                )
-            )
+    private fun createEncounterResultList(encounterResults: List<EncounterResult>): RealmList<EncounterResultORM> =
+        RealmList<EncounterResultORM>().apply {
+            encounterResults.forEach {
+                add(toData(it))
+            }
         }
-    })
+
+    private fun createRoundORMFromRound(
+        round: Round
+    ): RoundORM = RoundORM(
+        roundList = RealmList<EncounterORM>().apply {
+            round.encounterList.forEach { encounter ->
+                add(
+                    createEncounterORMFromEncounter(
+                        encounter
+                    )
+                )
+            }
+        }
+    )
 
     private fun createEncounterORMFromEncounter(
-        encounterMaxId: Long,
         encounter: Encounter
     ): EncounterORM = EncounterORM(
-        encounterMaxId, RealmList<PlayerORM>().apply {
+        playerList = RealmList<PlayerORM>().apply {
             encounter.playerList.forEach { player ->
                 add(createPlayerORMFromPlayer(player))
             }
-        })
+        }
+    )
 
     private fun createPlayerORMFromPlayer(
         player: Player
@@ -121,18 +133,16 @@ class TournamentLocalDataSource : TournamentDataSource {
         )
 
     private fun createTournamentORMFromTournament(
-        tournament: Tournament,
-        roundMaxId: Long,
-        encounterMaxId: Long
-    ): TournamentORM = TournamentORM(roundList = RealmList<RoundORM>().apply {
-        tournament.roundList.forEachIndexed { i, round ->
-            add(
-                createRoundORMFromRound(
-                    roundMaxId + 1 + i,
-                    round,
-                    encounterMaxId
+        tournament: Tournament
+    ): TournamentORM = TournamentORM(
+        roundList = RealmList<RoundORM>().apply {
+            tournament.roundList.forEach { round ->
+                add(
+                    createRoundORMFromRound(
+                        round
+                    )
                 )
-            )
+            }
         }
-    })
+    )
 }
